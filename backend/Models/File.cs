@@ -1,7 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace FileManagerBackend.Models
 {
     public class File
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public int VolumeId { get; set; }
         public required string Name { get; set; }
@@ -10,6 +15,8 @@ namespace FileManagerBackend.Models
         public DateTime CreateDate { get; set; }
         public DateTime ModifyDate { get; set; }
         public byte[] BinaryData { get; set; }
+
+        //Added Navigation
         public Volume Volume { get; set; }
         public ICollection<TagAssignment> TagAssignments { get; set; }
     }

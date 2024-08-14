@@ -15,9 +15,20 @@ namespace FileManagerBackend.Services.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Configuring primary keys and auto-increment
+            modelBuilder.Entity<Volume>()
+                .HasKey(v => v.Id);
+                
+            modelBuilder.Entity<File>()
+                .HasKey(f => f.Id);
+
+            modelBuilder.Entity<Tag>()
+                .HasKey(t => t.Id);
+
             modelBuilder.Entity<TagAssignment>()
                 .HasKey(ta => new { ta.FileId, ta.TagId });
 
+            // Configuring relationships
             modelBuilder.Entity<TagAssignment>()
                 .HasOne(ta => ta.File)
                 .WithMany(f => f.TagAssignments)
