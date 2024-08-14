@@ -18,8 +18,16 @@ namespace FileManagerBackend.Controllers
         [HttpGet]
         public async Task<IActionResult> GetVolumes()
         {
+            try
+            {
             var volumes = await _volumeRepository.GetVolumesAsync();
             return Ok(volumes);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
         }
 
         [HttpGet("{id}")]

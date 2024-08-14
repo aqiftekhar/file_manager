@@ -1,3 +1,4 @@
+using FileManagerBackend.Repositories.VolumeRepository;
 using FileManagerBackend.Services.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Configure DbContext
 builder.Services.AddDbContext<FileManagementContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure repositories
+builder.Services.AddScoped<IVolumeRepository, VolumeRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
