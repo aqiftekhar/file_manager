@@ -1,6 +1,6 @@
 using FileManagerBackend.Models;
 
-namespace FileManagementApi.Repositories
+namespace FileManagerBackend.Repositories.TagRepository
 {
     public interface ITagRepository
     {

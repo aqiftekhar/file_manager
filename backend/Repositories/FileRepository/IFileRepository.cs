@@ -1,6 +1,6 @@
 using File = FileManagerBackend.Models.File;
 
-namespace FileManagementApi.Repositories
+namespace FileManagerBackend.Repositories.FileRepository
 {
     public interface IFileRepository
     {

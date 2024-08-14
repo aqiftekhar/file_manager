@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using FileManagerBackend.Models;
 using File = FileManagerBackend.Models.File;
 
-namespace FileManagerBackend.Services
+namespace FileManagerBackend.Services.Data
 {
     public class FileManagementContext : DbContext
     {
