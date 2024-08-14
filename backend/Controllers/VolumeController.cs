@@ -1,3 +1,4 @@
+using System.Net;
 using FileManagerBackend.Models;
 using FileManagerBackend.Repositories.VolumeRepository;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +21,12 @@ namespace FileManagerBackend.Controllers
         {
             try
             {
-            var volumes = await _volumeRepository.GetVolumesAsync();
-            return Ok(volumes);
+                var volumes = await _volumeRepository.GetVolumesAsync();
+                return Ok(volumes);
             }
             catch (Exception ex)
             {
-                throw ex;
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving volumes. Please try again later. Error = " + ex.Message);
             }
 
         }
@@ -33,38 +34,71 @@ namespace FileManagerBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetVolume(int id)
         {
-            var volume = await _volumeRepository.GetVolumeAsync(id);
-            if (volume == null)
+            try
             {
-                return NotFound("Volumes not Found.");
+                var volume = await _volumeRepository.GetVolumeAsync(id);
+                if (volume == null)
+                {
+                    return StatusCode((int)HttpStatusCode.NotFound, "Volume not found.");
+                }
+                return Ok(volume);
             }
-            return Ok(volume);
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving volume. Please try again later. Error : " + ex.Message);
+            }
+
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateVolume(Volume volume)
         {
-            await _volumeRepository.AddVolumeAsync(volume);
-            return CreatedAtAction(nameof(GetVolume), new { id = volume.Id }, volume);
+            try
+            {
+                await _volumeRepository.AddVolumeAsync(volume);
+                return CreatedAtAction(nameof(GetVolume), new { id = volume.Id }, volume);
+            }
+            catch (Exception ex)
+            {
+
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating volume. Please try again later. Error : " + ex.Message);
+            }
+
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateVolume(int id, Volume volume)
         {
-            if (id != volume.Id)
+            try
             {
-                return BadRequest("Bad Request. Please check the values");
+                if (id != volume.Id)
+                {
+                    return BadRequest("Bad Request. Please check the values");
+                }
+
+                await _volumeRepository.UpdateVolumeAsync(volume);
+                return StatusCode((int)HttpStatusCode.OK, "Volume updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error updating file. Please try again later. Error : " + ex.Message);
             }
 
-            await _volumeRepository.UpdateVolumeAsync(volume);
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteVolume(int id)
         {
-            await _volumeRepository.DeleteVolumeAsync(id);
-            return NoContent();
+            try
+            {
+              await _volumeRepository.DeleteVolumeAsync(id);
+            return StatusCode((int)HttpStatusCode.OK, "Volume deleted successfully.");  
+            }
+            catch (Exception ex)
+            {
+               return StatusCode((int)HttpStatusCode.InternalServerError, "Error deleting volume. Please try again later. Error : " + ex.Message);
+            }
+            
         }
     }
 }
