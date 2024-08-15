@@ -1,4 +1,5 @@
 using FileManagerBackend.Repositories.FileRepository;
+using FileManagerBackend.Repositories.TagAssignmentRepository;
 using FileManagerBackend.Repositories.TagRepository;
 using FileManagerBackend.Repositories.VolumeRepository;
 using FileManagerBackend.Services.Data;
@@ -15,6 +16,7 @@ builder.Services.AddDbContext<FileManagementContext>(options =>
 builder.Services.AddScoped<IVolumeRepository, VolumeRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();
+builder.Services.AddScoped<ITagAssignmentRepository, TagAssignmentRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
