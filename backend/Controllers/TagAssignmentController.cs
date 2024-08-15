@@ -28,7 +28,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving Tags. Please try again later. Error = " + ex.Message);
             }
-
         }
 
         [HttpPost]
@@ -43,7 +42,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating Tag Assignment. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpPut]
@@ -65,7 +63,7 @@ namespace FileManagerBackend.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error updating Tag Assignment. Please try again later. Error : " + ex.Message);
             }
         }
-        
+
         [HttpDelete("{fileId}/{tagId}")]
         public async Task<IActionResult> RemoveTagAssignment(int fileId, int tagId)
         {
@@ -78,7 +76,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error deleting tag assignment. Please try again later. Error : " + ex.Message);
             }
-
         }
     }
 }

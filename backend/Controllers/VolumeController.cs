@@ -28,7 +28,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving volumes. Please try again later. Error = " + ex.Message);
             }
-
         }
 
         [HttpGet("{id}")]
@@ -47,7 +46,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving volume. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpPost]
@@ -60,10 +58,8 @@ namespace FileManagerBackend.Controllers
             }
             catch (Exception ex)
             {
-
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating volume. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpPut("{id}")]
@@ -83,7 +79,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error updating file. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpDelete("{id}")]
@@ -98,7 +93,6 @@ namespace FileManagerBackend.Controllers
             {
                return StatusCode((int)HttpStatusCode.InternalServerError, "Error deleting volume. Please try again later. Error : " + ex.Message);
             }
-            
         }
     }
 }

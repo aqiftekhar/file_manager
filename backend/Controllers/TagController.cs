@@ -28,7 +28,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving Tags. Please try again later. Error = " + ex.Message);
             }
-
         }
 
         [HttpGet("{id}")]
@@ -47,7 +46,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving file. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpPost]
@@ -62,7 +60,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating Tag. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpPut("{id}")]
@@ -82,7 +79,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error updating Tag. Please try again later. Error : " + ex.Message);
             }
-
         }
 
         [HttpDelete("{id}")]
@@ -97,7 +93,6 @@ namespace FileManagerBackend.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error deleting tag. Please try again later. Error : " + ex.Message);
             }
-
         }
     }
 }
