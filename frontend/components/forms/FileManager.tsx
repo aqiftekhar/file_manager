@@ -10,7 +10,7 @@ import { z } from "zod";
 import { FileManagerFormValidation } from "@/lib/FormValidation";
 import { DataTable } from "../table/DataTable";
 import { columns } from "../table/columns";
-import ShowPDFButton from "../ShowPDFButton";
+import CustomButton from "../CustomButton";
 
 const FileManager = () => {
 
@@ -340,16 +340,16 @@ const FileManager = () => {
 
                                 <div className="flex flex-col xs:flex-row py-20 justify-between">
                                     <div className="flex gap-2">
-                                        <ShowPDFButton isLoading={false} >
+                                        <CustomButton isLoading={false} >
                                             Show PDF
-                                        </ShowPDFButton>
+                                        </CustomButton>
                                         <div className="hidden md:block md:w-[280px]"></div>
-                                        <ShowPDFButton isLoading={false}  >
+                                        <CustomButton isLoading={false}  >
                                             Download
-                                        </ShowPDFButton>
-                                        <ShowPDFButton isLoading={false} >
+                                        </CustomButton>
+                                        <CustomButton isLoading={false} >
                                             Upload
-                                        </ShowPDFButton>
+                                        </CustomButton>
                                     </div>
                                 </div>
                             </div>

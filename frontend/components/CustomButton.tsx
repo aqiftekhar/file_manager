@@ -5,7 +5,7 @@ import Image from "next/image";
 
 
 
-const ShowPDFButton = ({ isLoading = false, className, children }: ICustomButtonProps) => {
+const CustomButton = ({ isLoading = false, className, children }: ICustomButtonProps) => {
     return (
         <Button type="button" disabled={isLoading} className={className ?? 'shad-primary-btn w-full'}>
             {isLoading ? (
@@ -25,4 +25,4 @@ const ShowPDFButton = ({ isLoading = false, className, children }: ICustomButton
     )
 }
 
-export default ShowPDFButton;
+export default CustomButton;
