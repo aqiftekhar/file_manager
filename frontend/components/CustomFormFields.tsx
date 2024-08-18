@@ -14,8 +14,6 @@ import { FormFieldTypes } from "@/lib/FormFieldTypes";
 import { Control } from "react-hook-form";
 import { RenderFields } from "./RenderFields";
 
-
-
 const CustomFormFields = (props : IFormCustomProps) => {
     const {control, fieldType, name, label } = props;
   return (

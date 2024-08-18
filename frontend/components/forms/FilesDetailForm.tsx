@@ -8,10 +8,10 @@ import CustomFormFields from "../CustomFormFields";
 import { FormFieldTypes } from "@/lib/FormFieldTypes";
 import { Files } from "@/types/db.types";
 
-
 type FilesDetailFormProps = UseFormReturn<z.infer<typeof FileManagerFormValidation>> & {
     selectedFile?: Files | null; 
 };
+
 const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, selectedFile }) => {
     
     const form = useForm({
@@ -21,6 +21,7 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, selectedFile
             tags: "",
             savepaper: false,
             createdDate: new Date(),
+            
         },
     });
 

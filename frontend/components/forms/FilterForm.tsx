@@ -10,15 +10,17 @@ import { FormFieldTypes } from "@/lib/FormFieldTypes";
 import SubmitButton from "../SubmitButton";
 import { SelectItem } from "../ui/select";
 import CustomButton from "../CustomButton";
+import { FilterFormProps } from "@/types/db.types";
 
-const FilterForm = () => {
+const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
     const formMethods = useForm<z.infer<typeof FilterFormValidation>>({
         resolver: zodResolver(FilterFormValidation),
         defaultValues: {
+            ...FilterFormValidation,
             title: "",
             description: "",
             tags: "",
-            createdDate: new Date()
+            createdDate: new Date(),
         },
     });
 
@@ -29,7 +31,9 @@ const FilterForm = () => {
             console.log(error);
         }
     }
-
+    const handleClear = () => {
+        formMethods.reset();  
+    };
     return (
         <FormProvider {...formMethods}>
             <form onSubmit={formMethods.handleSubmit(onSubmit)} className="flex-1 space-y-6">
@@ -110,8 +114,8 @@ const FilterForm = () => {
                     </div>
                 </div>
                 <div className="flex flex-row space-x-2 justify-end">
-                <CustomButton isLoading={false} className="shad-danger-btn">Close</CustomButton>
-                <CustomButton isLoading={false} className="shad-gray-btn">Clear</CustomButton>
+                <CustomButton isLoading={false} className="shad-danger-btn" onclick={closeDialog}>Close</CustomButton>
+                <CustomButton isLoading={false} className="shad-gray-btn" onclick={handleClear}>Clear</CustomButton>
                     <SubmitButton isLoading={false} className="shad-primary-btn">
                         Submit
                     </SubmitButton>

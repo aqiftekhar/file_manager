@@ -286,6 +286,18 @@ const FileManager = () => {
             console.log(error);
         }
     }
+
+    const closeDialog = () => {
+        setIsFilterOpen(false);
+    };
+    const handelShowPDF = () => {
+        console.log("Show PDF Clicked");
+        
+    }
+    const handelDownload = () => {
+        console.log("Download Clicked");
+        
+    }
     return (
         <div className="flex h-screen max-h-screen">
             <section className="remove-scrollbar container my-auto">
@@ -301,9 +313,9 @@ const FileManager = () => {
 
                                 <div className="flex flex-col xs:flex-row py-20 justify-between">
                                     <div className="flex gap-2">
-                                        <CustomButton isLoading={false} className="shad-danger-btn">Show PDF</CustomButton>
+                                        <CustomButton isLoading={false} className="shad-danger-btn" onclick={handelShowPDF}>Show PDF</CustomButton>
                                         <div className="hidden md:block md:w-[280px]"></div>
-                                        <CustomButton isLoading={false} className="shad-gray-btn">Download</CustomButton>
+                                        <CustomButton isLoading={false} className="shad-gray-btn" onclick={handelDownload}>Download</CustomButton>
                                         <SubmitButton isLoading={false} className="shad-primary-btn">Upload</SubmitButton>
                                     </div>
                                 </div>
@@ -318,7 +330,7 @@ const FileManager = () => {
                                     Please fill in the following details to filter Files.
                                 </DialogDescription>
                             </DialogHeader>
-                            <FilterForm />
+                            <FilterForm closeDialog={closeDialog}/>
                         </DialogContent>
                     </Dialog>
                 </div>

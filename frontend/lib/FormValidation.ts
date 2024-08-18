@@ -29,4 +29,6 @@ export const FilterFormValidation = z.object({
   tags: z.string().min(20, "tags must be at least 20 characters"),
 
   createdDate: z.coerce.date(),
+  // createdcondition: z.coerce.string().optional(),
+  // hastags: z.coerce.string().optional()
 });

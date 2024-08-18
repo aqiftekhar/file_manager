@@ -1,11 +1,9 @@
-import { ICustomButtonProps } from "@/lib/ICustomButtonProps";
 import React from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import { ISubmitButtonProps } from "@/lib/ISubmitButtonProps";
 
-
-
-const SubmitButton = ({ isLoading, className, children }: ICustomButtonProps) => {
+const SubmitButton = ({ isLoading, className, children }: ISubmitButtonProps) => {
     return (
         <Button type="submit" disabled={isLoading} className={className ?? 'shad-primary-btn w-full'}>
             {isLoading ? (
