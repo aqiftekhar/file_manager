@@ -13,8 +13,6 @@ type FilesDetailFormProps = UseFormReturn<z.infer<typeof FileManagerFormValidati
     selectedFile?: Files | null; 
 };
 const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, selectedFile }) => {
-
-    console.log( selectedFile?.createDate);
     
     const form = useForm({
         defaultValues: {
