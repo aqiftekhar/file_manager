@@ -22,7 +22,7 @@ import { Files } from "@/types/db.types";
 
 const FileManager = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const[selectedFile, setSelectedFile] = useState<Files | null>(null);
+    const [selectedFile, setSelectedFile] = useState<Files | null>(null);
 
 
     const dummyFiles = [
@@ -279,6 +279,8 @@ const FileManager = () => {
         },
     });
 
+    const {reset, handleSubmit} = form;
+
     async function onSubmit(values: z.infer<typeof FileManagerFormValidation>) {
         try {
             console.log("Submit details");
@@ -292,11 +294,11 @@ const FileManager = () => {
     };
     const handelShowPDF = () => {
         console.log("Show PDF Clicked");
-        
+
     }
     const handelDownload = () => {
         console.log("Download Clicked");
-        
+
     }
     return (
         <div className="flex h-screen max-h-screen">
@@ -304,12 +306,12 @@ const FileManager = () => {
                 <div className="sub-container w-full flex-1 flex-col py-10 ml-5 mt-5">
 
                     <FormProvider {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col md:flex-row w-full">
+                        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row w-full">
                             <div className="flex-1 w-full md:w-1/2 space-y-5">
-                                <FilesForm {...form} dummyFiles={dummyFiles} setIsFilterOpen={setIsFilterOpen} setSelectedFile = {setSelectedFile} />
+                                <FilesForm {...form} dummyFiles={dummyFiles} setIsFilterOpen={setIsFilterOpen} setSelectedFile={setSelectedFile} />
                             </div>
                             <div className="w-full md:w-1/2 md:ml-5 mt-5 md:mt-0 space-y-5">
-                                <FilesDetailForm {...form} selectedFile={selectedFile}/>
+                                <FilesDetailForm {...form} reset={reset} selectedFile={selectedFile} />
 
                                 <div className="flex flex-col xs:flex-row py-20 justify-between">
                                     <div className="flex gap-2">
@@ -330,7 +332,7 @@ const FileManager = () => {
                                     Please fill in the following details to filter Files.
                                 </DialogDescription>
                             </DialogHeader>
-                            <FilterForm closeDialog={closeDialog}/>
+                            <FilterForm closeDialog={closeDialog} />
                         </DialogContent>
                     </Dialog>
                 </div>

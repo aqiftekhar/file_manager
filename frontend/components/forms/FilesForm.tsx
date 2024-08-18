@@ -34,7 +34,6 @@ const FilesForm: React.FC<FilesFormProps> = ({ control, dummyFiles, setIsFilterO
                     />
                 </button>
             </div>
-
             <div className="h-screen overflow-y-auto w-full">
                 <DataTable columns={columns} data={dummyFiles} onRowSelect={(file) => setSelectedFile(file)} />
             </div>

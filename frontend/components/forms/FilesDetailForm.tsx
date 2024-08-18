@@ -1,31 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useForm, UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { FileManagerFormValidation } from "@/lib/FormValidation";
 import CustomFormFields from "../CustomFormFields";
 import { FormFieldTypes } from "@/lib/FormFieldTypes";
-import { Files } from "@/types/db.types";
+import { FilesDetailFormProps } from "@/types/db.types";
 
-type FilesDetailFormProps = UseFormReturn<z.infer<typeof FileManagerFormValidation>> & {
-    selectedFile?: Files | null; 
-};
-
-const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, selectedFile }) => {
-    
-    const form = useForm({
-        defaultValues: {
-            title: "",
-            description: "",
-            tags: "",
-            savepaper: false,
-            createdDate: new Date(),
-            
-        },
-    });
-
-    const { reset } = form;
+const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, reset, selectedFile }) => {
 
     useEffect(() => {
         if (selectedFile) {
@@ -37,7 +17,8 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, selectedFile
                 createdDate: selectedFile.createDate || new Date(),
             });
         }
-    }, [selectedFile, reset]);
+    }, [selectedFile, control]);
+
     return (
        <>
        <CustomFormFields
@@ -45,33 +26,33 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, selectedFile
                 name="title"
                 label="Title"
                 placeholder="Document's Title here"
-                control={form.control}
+                control={control}
             />
             <CustomFormFields
                 fieldType={FormFieldTypes.TEXTAREA}
                 name="description"
                 label="Document Description"
                 placeholder="Document's description here"
-                control={form.control}
+                control={control}
             />
             <CustomFormFields
                 fieldType={FormFieldTypes.CHECKBOX}
                 name="savepaper"
                 label="Save Paper"
-                control={form.control}
+                control={control}
             />
             <CustomFormFields
                 fieldType={FormFieldTypes.INPUT}
                 name="tags"
                 label="Tags"
-                control={form.control}
+                control={control}
             />
             <CustomFormFields
                 fieldType={FormFieldTypes.DATE_PICKER}
                 name="createdDate"
                 label="Created Date"
                 dateFormat="MM/dd/yyyy"
-                control={form.control}
+                control={control}
             />
        </>
     );
