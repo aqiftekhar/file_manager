@@ -18,10 +18,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { Files } from "@/types/db.types";
 
 const FileManager = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-
+    const[selectedFile, setSelectedFile] = useState<Files | null>(null);
 
 
     const dummyFiles = [
@@ -29,7 +30,7 @@ const FileManager = () => {
             id: 1,
             volumeId: 1,
             name: "File 1",
-            description: null,
+            description: "This is description for file 1",
             savepaper: false,
             createDate: new Date(),
             modifyDate: new Date(),
@@ -39,8 +40,8 @@ const FileManager = () => {
             id: 2,
             volumeId: 1,
             name: "File 2",
-            description: null,
-            savepaper: false,
+            description: "This is description for file 2",
+            savepaper: true,
             createDate: new Date(),
             modifyDate: new Date(),
             binaryData: Buffer.from(''),
@@ -293,10 +294,10 @@ const FileManager = () => {
                     <FormProvider {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col md:flex-row w-full">
                             <div className="flex-1 w-full md:w-1/2 space-y-5">
-                                <FilesForm {...form} dummyFiles={dummyFiles} setIsFilterOpen={setIsFilterOpen} />
+                                <FilesForm {...form} dummyFiles={dummyFiles} setIsFilterOpen={setIsFilterOpen} setSelectedFile = {setSelectedFile} />
                             </div>
                             <div className="w-full md:w-1/2 md:ml-5 mt-5 md:mt-0 space-y-5">
-                                <FilesDetailForm {...form} />
+                                <FilesDetailForm {...form} selectedFile={selectedFile}/>
 
                                 <div className="flex flex-col xs:flex-row py-20 justify-between">
                                     <div className="flex gap-2">

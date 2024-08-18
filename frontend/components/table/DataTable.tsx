@@ -10,11 +10,9 @@ import {
     useReactTable,
 } from "@tanstack/react-table";
 import Image from "next/image";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
-
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"
+import { Input } from "@/components/ui/input";
 import {
     Table,
     TableBody,
@@ -28,16 +26,19 @@ import React from "react";
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
+    onRowSelect?: (row: TData) => void;
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    onRowSelect,
 }: DataTableProps<TData, TValue>) {
 
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [selectedRowId, setSelectedRowId] = useState<string | null>(null); 
+
+
     const table = useReactTable({
         data,
         columns,
@@ -50,8 +51,14 @@ export function DataTable<TData, TValue>({
         },
     });
 
-    return (
+    const handleRowClick = (rowId: string, rowValues: TData) => {
+        setSelectedRowId(rowId);
+        if (onRowSelect) {
+            onRowSelect(rowValues); 
+        }
+    };
 
+    return (
         <div className="data-table">
             <div className="flex items-center py-4 justify-end">
                 <Input
@@ -64,7 +71,7 @@ export function DataTable<TData, TValue>({
                 />
             </div>
             <Table className="shad-table">
-                <TableHeader className=" bg-dark-200">
+                <TableHeader className="bg-dark-200">
                     {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id} className="shad-table-row-header">
                             {headerGroup.headers.map((header) => {
@@ -87,8 +94,10 @@ export function DataTable<TData, TValue>({
                         table.getRowModel().rows.map((row) => (
                             <TableRow
                                 key={row.id}
-                                data-state={row.getIsSelected() && "selected"}
-                                className="shad-table-row"
+                                onClick={() => handleRowClick(row.id, row.original)}
+                                className={`shad-table-row ${
+                                    selectedRowId === row.id ? "bg-dark-600 text-white" : "hover:bg-dark-600 text-white"
+                                }`}
                             >
                                 {row.getVisibleCells().map((cell) => (
                                     <TableCell key={cell.id}>
@@ -112,9 +121,8 @@ export function DataTable<TData, TValue>({
                     size="sm"
                     onClick={(event) => {
                         event.preventDefault();
-                        table.nextPage()
-                    }
-                    }
+                        table.previousPage();
+                    }}
                     disabled={!table.getCanPreviousPage()}
                     className="shad-gray-btn"
                 >
@@ -130,9 +138,8 @@ export function DataTable<TData, TValue>({
                     size="sm"
                     onClick={(event) => {
                         event.preventDefault();
-                        table.nextPage()
-                    }
-                    }
+                        table.nextPage();
+                    }}
                     disabled={!table.getCanNextPage()}
                     className="shad-gray-btn"
                 >
@@ -148,3 +155,6 @@ export function DataTable<TData, TValue>({
         </div>
     );
 }
+
+
+

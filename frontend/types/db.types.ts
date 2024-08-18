@@ -1,4 +1,5 @@
 import { FileManagerFormValidation } from "@/lib/FormValidation";
+import { SetStateAction } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
@@ -24,5 +25,6 @@ export interface Files {
       modifyDate: Date;
       binaryData: Buffer;
     }>,
-    setIsFilterOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsFilterOpen: React.Dispatch<React.SetStateAction<boolean>>,
+    setSelectedFile: React.Dispatch<SetStateAction<Files | null>>; 
   };

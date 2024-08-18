@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { DataTable } from "../table/DataTable";
 import { columns } from "../table/columns";
 import CustomFormFields from "../CustomFormFields";
@@ -8,7 +8,7 @@ import { FormFieldTypes } from "@/lib/FormFieldTypes";
 import Image from "next/image";
 import { FilesFormProps } from "@/types/db.types";
 
-const FilesForm: React.FC<FilesFormProps> = ({ control, dummyFiles, setIsFilterOpen }) => {
+const FilesForm: React.FC<FilesFormProps> = ({ control, dummyFiles, setIsFilterOpen, setSelectedFile }) => {
     return (
         <>
             <div className="flex flex-row items-center justify-items-center space-y-8 space-x-2">
@@ -36,7 +36,7 @@ const FilesForm: React.FC<FilesFormProps> = ({ control, dummyFiles, setIsFilterO
             </div>
 
             <div className="h-screen overflow-y-auto w-full">
-                <DataTable columns={columns} data={dummyFiles} />
+                <DataTable columns={columns} data={dummyFiles} onRowSelect={(file) => setSelectedFile(file)} />
             </div>
         </>
 

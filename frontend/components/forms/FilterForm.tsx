@@ -88,11 +88,11 @@ const FilterForm = () => {
                             placeholder="Select created condition"
                             control={formMethods.control}
                         >
-                            <SelectItem value="Before">
-                                Before
-                            </SelectItem>
                             <SelectItem value="After">
                                 After
+                            </SelectItem>
+                            <SelectItem value="Before">
+                                Before
                             </SelectItem>
                             <SelectItem value="Equal">
                                 Equal To
@@ -104,8 +104,7 @@ const FilterForm = () => {
                             fieldType={FormFieldTypes.DATE_PICKER}
                             name="createdDate"
                             label=""
-                            showTimeSelect
-                            dateFormat="MM/dd/yyyy  -  h:mm aa"
+                            dateFormat="MM/dd/yyyy"
                             control={formMethods.control}
                         />
                     </div>
