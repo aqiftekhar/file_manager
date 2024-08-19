@@ -2,6 +2,7 @@ using FileManagerBackend.Models;
 using FileManagerBackend.Repositories.FileRepository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 using File = FileManagerBackend.Models.File;
 
 namespace FileManagerBackend.Controllers
@@ -50,18 +51,54 @@ namespace FileManagerBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateFile(File file)
+        [RequestSizeLimit(10_000_000)]
+        public async Task<IActionResult> CreateFile([FromForm] IFormFile file, [FromForm] string fileDataJson)
         {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            File fileEntry;
+            File fileData;
+
             try
             {
-                await _fileRepository.AddFileAsync(file);
-                return CreatedAtAction(nameof(GetFile), new { id = file.Id }, file);
+                // Deserialize the JSON file data
+                fileData = JsonSerializer.Deserialize<File>(fileDataJson);
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream);
+                    var binaryData = memoryStream.ToArray();
+
+                    fileEntry = new File
+                    {
+                        VolumeId = fileData.VolumeId,
+                        Name = fileData.Name,
+                        Description = fileData.Description,
+                        SavePaper = fileData.SavePaper,
+                        CreateDate = DateTime.Now,
+                        ModifyDate = DateTime.Now,
+                        BinaryData = binaryData,
+                    };
+
+                    await _fileRepository.AddFileAsync(fileEntry);
+                }
+
+                return CreatedAtAction(nameof(GetFile), new { id = fileEntry.Id }, fileEntry);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating file. Please try again later. Error : "+ ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error creating file. Please try again later. Error : " + ex);
             }
         }
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFile(int id, File file)
@@ -93,6 +130,42 @@ namespace FileManagerBackend.Controllers
             catch (Exception ex)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "Error deleting file. Please try again later. Error : " + ex.Message);
+            }
+        }
+
+        [HttpGet("filter/{volumeId}")]
+        public async Task<IActionResult> GetFilesByVolumeId(int volumeId)
+        {
+            try
+            {
+                Console.WriteLine("Volume Id = " + volumeId);
+
+                var files = await _fileRepository.GetFilesByVolumeIdAsync(volumeId);
+                return Ok(files);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving files. Please try again later. Error = " + ex.Message);
+            }
+        }
+
+        [HttpGet("volumes")]
+        public async Task<IActionResult> GetVolumesWithFilesAndTags()
+        {
+            try
+            {
+                var volumes = await _fileRepository.GetVolumesWithFilesAndTagsAsync();
+
+                if (volumes == null || !volumes.Any())
+                {
+                    return NotFound("No volumes found.");
+                }
+
+                return Ok(volumes);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Error retrieving volumes. Please try again later. Error = " + ex.Message);
             }
         }
     }

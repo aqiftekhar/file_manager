@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FilesForm from "./FilesForm";
 import FilesDetailForm from "./FilesDetailForm";
 import { FormProvider, useForm } from "react-hook-form";
@@ -10,6 +10,7 @@ import { FileManagerFormValidation } from "@/lib/FormValidation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FilterForm from "./FilterForm";
+
 import {
     Dialog,
     DialogContent,
@@ -18,268 +19,43 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { Files } from "@/types/db.types";
+import { File, SaveFileProps, Volume } from "@/types/db.types";
+import { getVolumes } from "@/lib/data/volume.actions";
+import { getFiles, saveFile } from "@/lib/data/files.actions";
 
 const FileManager = () => {
+    const pdfContainerRef = useRef(null);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<Files | null>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [volumes, setVolumes] = useState<Volume[]>([]);
+    const [files, setFiles] = useState<File[] | null>(null);
 
+    useEffect(() => {
+        const fetchVolumes = async () => {
+            const data = await getVolumes();
+            if (data) {
+                setVolumes(data.$values);
+                const extractedFiles = data.$values.flatMap(volume => volume.files.$values);
 
-    const dummyFiles = [
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 1",
-            description: "This is description for file 1",
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 2",
-            description: "This is description for file 2",
-            savepaper: true,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 3,
-            volumeId: 1,
-            name: "File 3",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 4,
-            volumeId: 1,
-            name: "File 4",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 5",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 6",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 7",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 8",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 9",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 10",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 11",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 12",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 13",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 14",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 15",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 16",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 17",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 18",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 19",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 20",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 21",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 22",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 1,
-            volumeId: 1,
-            name: "File 23",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        },
-        {
-            id: 2,
-            volumeId: 1,
-            name: "File 24",
-            description: null,
-            savepaper: false,
-            createDate: new Date(),
-            modifyDate: new Date(),
-            binaryData: Buffer.from(''),
-        }
-    ];
+                setFiles(extractedFiles);
+            }
+        };
+        fetchVolumes();
+    }, []);
+
     const form = useForm<z.infer<typeof FileManagerFormValidation>>({
         resolver: zodResolver(FileManagerFormValidation),
         defaultValues: {
             ...FileManagerFormValidation,
-            title: "",
+            name: "",
             description: "",
             tags: "",
-            savepaper: false,
+            savePaper: false,
             createdDate: new Date(),
         },
     });
 
-    const {reset, handleSubmit} = form;
+    const { reset, handleSubmit } = form;
 
     async function onSubmit(values: z.infer<typeof FileManagerFormValidation>) {
         try {
@@ -292,14 +68,88 @@ const FileManager = () => {
     const closeDialog = () => {
         setIsFilterOpen(false);
     };
+
+
     const handelShowPDF = () => {
-        console.log("Show PDF Clicked");
+        if (selectedFile && selectedFile.binaryData) {
+            try {
+                const binaryDataString = selectedFile.binaryData.toString('base64');
+                console.log("Binary Data String:", binaryDataString);
 
-    }
-    const handelDownload = () => {
-        console.log("Download Clicked");
+                const iframe = document.createElement('iframe');
+                iframe.src = `data:application/pdf;base64,${binaryDataString}`;
+                iframe.frameBorder = '0';
+                iframe.width = '100%';
+                iframe.height = '100%';
 
-    }
+                if (pdfContainerRef.current) {
+                    (pdfContainerRef.current as HTMLElement).innerHTML = '';
+                    (pdfContainerRef.current as HTMLElement).appendChild(iframe);
+                } else {
+                    console.error("Element with ID 'pdf-container' not found");
+                }
+
+                const newTab = window.open();
+                newTab?.document.body.appendChild(iframe);
+            } catch (error) {
+                console.error("Error loading PDF:", error);
+            }
+        } else {
+            console.error("No file selected or binary data is missing.");
+        }
+    };
+
+
+    const handleDownload = async () => {
+        if (selectedFile && selectedFile?.binaryData) {
+            try {
+                const binaryDataString = selectedFile.binaryData.toString('base64');
+
+                const link = document.createElement('a');
+
+                link.href = `data:application/pdf;base64,${binaryDataString}`;
+                link.download = `${selectedFile.name}.pdf` || 'download.pdf'
+                document.body.appendChild(link);
+                link.click();
+
+                document.body.removeChild(link);
+
+
+            } catch (error) {
+                console.error("Error downloading PDF:", error);
+            }
+        } else {
+            console.error("No File selected or Binary data is missing.")
+        }
+    };
+
+    // function handleUpload(): void {
+    //     const pdfUrl = "https://pdfobject.com/pdf/sample.pdf";
+
+    //     fetch(pdfUrl)
+    //         .then((response) => response.blob())
+    //         .then((blob) => {
+    //             const formData = new FormData();
+    //             formData.append('file', blob, 'downloaded.pdf'); 
+
+    //             const file_data: SaveFileProps = {
+    //                 VolumeId: 1,
+    //                 Name: 'Sample PDF document',
+    //                 Description: 'Description of the PDF',
+    //                 SavePaper: true,
+    //                 CreateDate: new Date(),
+    //                 ModifyDate: new Date(),
+    //                 BinaryData: Buffer.from('') 
+    //             };
+
+    //             saveFile(formData, file_data);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching PDF:", error);
+    //         });
+    // }
+
+
     return (
         <div className="flex h-screen max-h-screen">
             <section className="remove-scrollbar container my-auto">
@@ -308,7 +158,7 @@ const FileManager = () => {
                     <FormProvider {...form}>
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row w-full">
                             <div className="flex-1 w-full md:w-1/2 space-y-5">
-                                <FilesForm {...form} dummyFiles={dummyFiles} setIsFilterOpen={setIsFilterOpen} setSelectedFile={setSelectedFile} />
+                                <FilesForm {...form} volumes={volumes} files={files} setIsFilterOpen={setIsFilterOpen} setSelectedFile={setSelectedFile} setFiles={setFiles} />
                             </div>
                             <div className="w-full md:w-1/2 md:ml-5 mt-5 md:mt-0 space-y-5">
                                 <FilesDetailForm {...form} reset={reset} selectedFile={selectedFile} />
@@ -317,7 +167,7 @@ const FileManager = () => {
                                     <div className="flex gap-2">
                                         <CustomButton isLoading={false} className="shad-danger-btn" onclick={handelShowPDF}>Show PDF</CustomButton>
                                         <div className="hidden md:block md:w-[280px]"></div>
-                                        <CustomButton isLoading={false} className="shad-gray-btn" onclick={handelDownload}>Download</CustomButton>
+                                        <CustomButton isLoading={false} className="shad-gray-btn" onclick={handleDownload}>Download</CustomButton>
                                         <SubmitButton isLoading={false} className="shad-primary-btn">Upload</SubmitButton>
                                     </div>
                                 </div>
@@ -335,6 +185,7 @@ const FileManager = () => {
                             <FilterForm closeDialog={closeDialog} />
                         </DialogContent>
                     </Dialog>
+                    <div ref={pdfContainerRef} id="pdf-container"></div>
                 </div>
             </section>
         </div>

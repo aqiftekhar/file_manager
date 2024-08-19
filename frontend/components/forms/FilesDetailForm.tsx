@@ -10,10 +10,10 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, reset, selec
     useEffect(() => {
         if (selectedFile) {
             reset({
-                title: selectedFile.name || "",
+                name: selectedFile.name || "",
                 description: selectedFile.description || "",
                 tags: "",
-                savepaper: selectedFile.savepaper || false,
+                savePaper: selectedFile.savePaper || false,
                 createdDate: selectedFile.createDate || new Date(),
             });
         }
@@ -23,7 +23,7 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, reset, selec
        <>
        <CustomFormFields
                 fieldType={FormFieldTypes.INPUT}
-                name="title"
+                name="name"
                 label="Title"
                 placeholder="Document's Title here"
                 control={control}
@@ -37,7 +37,7 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, reset, selec
             />
             <CustomFormFields
                 fieldType={FormFieldTypes.CHECKBOX}
-                name="savepaper"
+                name="savePaper"
                 label="Save Paper"
                 control={control}
             />

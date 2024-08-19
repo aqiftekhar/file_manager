@@ -17,7 +17,7 @@ const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
         resolver: zodResolver(FilterFormValidation),
         defaultValues: {
             ...FilterFormValidation,
-            title: "",
+            name: "",
             description: "",
             tags: "",
             createdDate: new Date(),
@@ -39,7 +39,7 @@ const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
             <form onSubmit={formMethods.handleSubmit(onSubmit)} className="flex-1 space-y-6">
                 <CustomFormFields
                     fieldType={FormFieldTypes.INPUT}
-                    name="title"
+                    name="name"
                     label="Title Contains"
                     placeholder="Document's Title here"
                     control={formMethods.control}

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace FileManagerBackend.Models
 {
@@ -17,8 +18,11 @@ namespace FileManagerBackend.Models
         public byte[] BinaryData { get; set; }
 
         //Added Navigation
-        public Volume Volume { get; set; }
+        public Volume? Volume { get; set; }
         public ICollection<TagAssignment> TagAssignments { get; set; }
+
+        [NotMapped]
+        public IEnumerable<Tag> Tags => TagAssignments?.Select(ta => ta.Tag);
     }
 }
 

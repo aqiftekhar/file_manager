@@ -11,7 +11,7 @@ import { Textarea } from "./ui/textarea";
 import { Checkbox } from "./ui/checkbox";
 
 export const RenderFields = ({ field, props }: { field: any, props: IFormCustomProps }) => {
-    const { fieldType, iconSrc, iconAlt, placeholder, showTimeSelect, dateFormat, renderSkeleton } = props;
+    const { fieldType, iconSrc, iconAlt, placeholder, showTimeSelect, dateFormat, renderSkeleton,onChange } = props;
     switch (fieldType) {
         case FormFieldTypes.INPUT:
             return (
@@ -76,7 +76,7 @@ export const RenderFields = ({ field, props }: { field: any, props: IFormCustomP
             return (
                 <FormControl>
                     <Select
-                        onValueChange={field.onChange}
+                          onValueChange={onChange ? (value) => onChange({ target: { value } } as any) : field.onChange}
                         defaultValue={field.value}>
                         <FormControl>
                             <SelectTrigger className="shad-select-trigger">

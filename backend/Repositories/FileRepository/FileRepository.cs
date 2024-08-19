@@ -1,7 +1,9 @@
+using FileManagerBackend.Models;
 using FileManagerBackend.Repositories.Exceptions;
 using FileManagerBackend.Services.Data;
 using Microsoft.EntityFrameworkCore;
 using File = FileManagerBackend.Models.File;
+using System.Text.Json;
 
 namespace FileManagerBackend.Repositories.FileRepository
 {
@@ -31,7 +33,11 @@ namespace FileManagerBackend.Repositories.FileRepository
         {
             try
             {
-                return await _context.Files.ToListAsync();
+                return await _context.Files
+                    .Include(f => f.Volume)
+                    .Include(f => f.TagAssignments)
+                        .ThenInclude(ta => ta.Tag)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
@@ -44,6 +50,16 @@ namespace FileManagerBackend.Repositories.FileRepository
         {
             try
             {
+                // Check if VolumeId exists
+                var volumeExists = await _context.Volumes.AnyAsync(v => v.Id == file.VolumeId);
+                var fileJson = JsonSerializer.Serialize(file);
+                Console.WriteLine("File = " + fileJson);
+                if (!volumeExists)
+                {
+                    
+                    throw new ArgumentException("The specified VolumeId does not exist. " + file);
+                }
+
                 _context.Files.Add(file);
                 await _context.SaveChangesAsync();
             }
@@ -95,5 +111,38 @@ namespace FileManagerBackend.Repositories.FileRepository
                 throw new RepositoryException($"Error deleting file with id {id}", ex);
             }
         }
+        public async Task<IEnumerable<File>> GetFilesByVolumeIdAsync(int volumeId)
+        {
+            try
+            {
+                return await _context.Files
+                    .Include(f => f.Volume)
+                    .Include(f => f.TagAssignments)
+                        .ThenInclude(ta => ta.Tag)
+                    .Where(f => f.VolumeId == volumeId)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException($"Error fetching files based on volumeId {volumeId}", ex);
+            }
+
+        }
+        public async Task<IEnumerable<Volume>> GetVolumesWithFilesAndTagsAsync()
+        {
+            try
+            {
+                return await _context.Volumes
+                    .Include(v => v.Files)
+                        .ThenInclude(f => f.TagAssignments)
+                            .ThenInclude(ta => ta.Tag)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new RepositoryException("Error fetching volumes with files and tags", ex);
+            }
+        }
+
     }
 }

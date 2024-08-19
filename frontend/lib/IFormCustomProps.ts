@@ -14,4 +14,5 @@ export interface IFormCustomProps {
   showTimeSelect?: boolean;
   children?: React.ReactNode;
   renderSkeleton?: (field: any) => React.ReactNode;
+  onChange?: (event: React.ChangeEvent<any>) => void; // Add this line
 }

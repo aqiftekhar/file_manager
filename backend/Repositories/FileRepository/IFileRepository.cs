@@ -1,3 +1,4 @@
+using FileManagerBackend.Models;
 using File = FileManagerBackend.Models.File;
 
 namespace FileManagerBackend.Repositories.FileRepository
@@ -9,5 +10,8 @@ namespace FileManagerBackend.Repositories.FileRepository
         Task AddFileAsync(File file);
         Task UpdateFileAsync(File file);
         Task DeleteFileAsync(int id);
+         Task<IEnumerable<File>> GetFilesByVolumeIdAsync(int volumeId);
+
+         Task<IEnumerable<Volume>> GetVolumesWithFilesAndTagsAsync();
     }
 }
