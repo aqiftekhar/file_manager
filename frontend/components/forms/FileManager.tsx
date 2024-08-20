@@ -29,6 +29,7 @@ const FileManager = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [volumes, setVolumes] = useState<Volume[]>([]);
     const [files, setFiles] = useState<File[] | null>(null);
+    const [filteredFiles, setFilteredFiles] = useState<File[] | null>(null); // <-- New state for filtered files
 
     useEffect(() => {
         const fetchVolumes = async () => {
@@ -38,6 +39,7 @@ const FileManager = () => {
                 const extractedFiles = data.$values.flatMap(volume => volume.files.$values);
 
                 setFiles(extractedFiles);
+                setFilteredFiles(extractedFiles); 
             }
         };
         fetchVolumes();
@@ -51,7 +53,7 @@ const FileManager = () => {
             description: "",
             tags: "",
             savePaper: false,
-            createdDate: new Date(),
+            createDate: new Date(),
         },
     });
 
@@ -69,12 +71,14 @@ const FileManager = () => {
         setIsFilterOpen(false);
     };
 
+    const updateFilteredFiles = (filteredFiles: File[] | null) => {
+        setFilteredFiles(filteredFiles);
+    };
 
     const handelShowPDF = () => {
         if (selectedFile && selectedFile.binaryData) {
             try {
                 const binaryDataString = selectedFile.binaryData.toString('base64');
-                console.log("Binary Data String:", binaryDataString);
 
                 const iframe = document.createElement('iframe');
                 iframe.src = `data:application/pdf;base64,${binaryDataString}`;
@@ -158,7 +162,7 @@ const FileManager = () => {
                     <FormProvider {...form}>
                         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col md:flex-row w-full">
                             <div className="flex-1 w-full md:w-1/2 space-y-5">
-                                <FilesForm {...form} volumes={volumes} files={files} setIsFilterOpen={setIsFilterOpen} setSelectedFile={setSelectedFile} setFiles={setFiles} />
+                                <FilesForm {...form} volumes={volumes} files={filteredFiles} setIsFilterOpen={setIsFilterOpen} setSelectedFile={setSelectedFile} setFiles={setFilteredFiles} />
                             </div>
                             <div className="w-full md:w-1/2 md:ml-5 mt-5 md:mt-0 space-y-5">
                                 <FilesDetailForm {...form} reset={reset} selectedFile={selectedFile} />
@@ -182,7 +186,7 @@ const FileManager = () => {
                                     Please fill in the following details to filter Files.
                                 </DialogDescription>
                             </DialogHeader>
-                            <FilterForm closeDialog={closeDialog} />
+                            <FilterForm closeDialog={closeDialog} files={files} updateFilteredFiles={updateFilteredFiles} />
                         </DialogContent>
                     </Dialog>
                     <div ref={pdfContainerRef} id="pdf-container"></div>

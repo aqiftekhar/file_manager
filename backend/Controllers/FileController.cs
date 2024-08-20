@@ -138,8 +138,6 @@ namespace FileManagerBackend.Controllers
         {
             try
             {
-                Console.WriteLine("Volume Id = " + volumeId);
-
                 var files = await _fileRepository.GetFilesByVolumeIdAsync(volumeId);
                 return Ok(files);
             }

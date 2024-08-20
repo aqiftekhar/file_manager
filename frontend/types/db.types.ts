@@ -1,4 +1,7 @@
-import { FileManagerFormValidation, VolumeFormValidation } from "@/lib/FormValidation";
+import {
+  FileManagerFormValidation,
+  VolumeFormValidation,
+} from "@/lib/FormValidation";
 import { SetStateAction } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
@@ -11,8 +14,8 @@ export interface Tag {
 export interface TagAssignment {
   fileId: number;
   tagId: number;
-  file: File; 
-  tag: Tag;   
+  file: File;
+  tag: Tag;
 }
 
 export interface File {
@@ -24,9 +27,9 @@ export interface File {
   createDate: Date;
   modifyDate: Date;
   binaryData: Buffer;
-  tagAssignments?: TagAssignment[]; 
-  tags?: Tag[],
-  volume?: Volume
+  tagAssignments?: TagAssignment[];
+  tags?: { $values: Tag[] };
+  volume?: Volume;
 }
 
 export interface SaveFileProps {
@@ -38,9 +41,9 @@ export interface SaveFileProps {
   CreateDate: Date;
   ModifyDate: Date;
   BinaryData: Buffer;
-  tagAssignments?: TagAssignment[]; 
-  tags?: Tag[],
-  volume?: Volume
+  tagAssignments?: TagAssignment[];
+  tags?: Tag[];
+  volume?: Volume;
 }
 
 export interface Volume {
@@ -48,13 +51,26 @@ export interface Volume {
   name: string;
   description: string | null;
   files: {
-    $values: File[]; 
+    $values: File[];
   };
 }
 
-
 export interface FilterFormProps {
   closeDialog: () => void;
+  files: Array<{
+    id: number;
+    volumeId: number;
+    name: string;
+    description: string | null;
+    savePaper: boolean;
+    createDate: Date;
+    modifyDate: Date;
+    binaryData: Buffer;
+    tagAssignments?: TagAssignment[];
+    tags?: { $values: Tag[] };
+    volume?: Volume;
+  }> | null;
+  updateFilteredFiles: (filteredFiles: File[] | null) => void;
 }
 export type FilesFormProps = UseFormReturn<
   z.infer<typeof FileManagerFormValidation>
@@ -68,17 +84,19 @@ export type FilesFormProps = UseFormReturn<
     createDate: Date;
     modifyDate: Date;
     binaryData: Buffer;
-    tagAssignments?: TagAssignment[]; 
-    tags?: Tag[],
-    volume?: Volume
-  }> | null; 
+    tagAssignments?: TagAssignment[];
+    tags?: { $values: Tag[] };
+    volume?: Volume;
+  }> | null;
   volumes: Volume[];
   setIsFilterOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedFile: React.Dispatch<SetStateAction<File | null>>;
   setFiles: React.Dispatch<React.SetStateAction<File[] | null>>;
 };
 
-export type FilesDetailFormProps = UseFormReturn<z.infer<typeof FileManagerFormValidation>> & {
+export type FilesDetailFormProps = UseFormReturn<
+  z.infer<typeof FileManagerFormValidation>
+> & {
   reset: (values?: Partial<z.infer<typeof FileManagerFormValidation>>) => void;
-  selectedFile?: File | null; 
+  selectedFile?: File | null;
 };

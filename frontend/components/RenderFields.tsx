@@ -57,7 +57,7 @@ export const RenderFields = ({ field, props }: { field: any, props: IFormCustomP
                     />
                     <FormControl>
                         <DatePicker
-                            selected={field.value}
+                            selected={field.value || null}
                             onChange={(date) => field.onChange(date)}
                             dateFormat={dateFormat ?? 'MM/dd/yyyy'}
                             showTimeSelect={showTimeSelect ?? false}

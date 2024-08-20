@@ -12,26 +12,93 @@ import { SelectItem } from "../ui/select";
 import CustomButton from "../CustomButton";
 import { FilterFormProps } from "@/types/db.types";
 
-const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
+const FilterForm: React.FC<FilterFormProps> = ({ closeDialog, files, updateFilteredFiles }) => {
     const formMethods = useForm<z.infer<typeof FilterFormValidation>>({
         resolver: zodResolver(FilterFormValidation),
         defaultValues: {
             ...FilterFormValidation,
             name: "",
             description: "",
+            hasTags: "",
             tags: "",
-            createdDate: new Date(),
+            createdCondition: "",
+            createDate: null,
         },
     });
 
-    async function onSubmit(values: z.infer<typeof FilterFormValidation>) {
-        try {
-            console.log("Submit details", values);
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    const onSubmit = (values: z.infer<typeof FilterFormValidation>) => {
+        // Extract filter values
+        const filterDate = values.createDate ? new Date(values.createDate) : null;
+        const filterCondition = values.createdCondition || '';
+        const tagsFilter = values.tags ? values.tags.split(',').map(tag => tag.trim().toLowerCase()) : [];
+        const hasTags = values.hasTags || '';
+    
+        // Filter files
+        const filtered = files?.filter(file => {
+    
+            // Check `name` filter
+            if (values.name && !file.name.toLowerCase().includes(values.name.toLowerCase())) {
+                return false;
+            }
+    
+            // Check `description` filter
+            if (values.description && !file.description?.toLowerCase().includes(values.description.toLowerCase())) {
+                return false;
+            }
+    
+            // Check `tags` filter if `hasTags` is set
+            const fileTags = file.tags?.$values.map(tag => tag.tagName.toLowerCase()) || [];
+            if (hasTags) {
+                switch (hasTags) {
+                    case 'All':
+                        if (!tagsFilter.every(tag => fileTags.includes(tag))) {
+                            return false;
+                        }
+                        break;
+                    case 'Any':
+                        if (!tagsFilter.some(tag => fileTags.includes(tag))) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+            }
+    
+            // Check `createDate` filter if `filterDate` is set
+            if (filterDate) {
+                const fileDate = new Date(file.createDate);
+                switch (filterCondition) {
+                    case 'Before':
+                        if (!(fileDate < filterDate)) {
+                            return false;
+                        }
+                        break;
+                    case 'After':
+                        if (!(fileDate > filterDate)) {
+                            return false;
+                        }
+                        break;
+                    case 'Equal':
+                        if (!(fileDate.toDateString() === filterDate.toDateString())) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+            }
+    
+            return true; // Include file if it passes all filters
+        });
+    
+        updateFilteredFiles(filtered || []); // Update the filtered files
+        closeDialog();
+    };
+    
+    
     const handleClear = () => {
+        updateFilteredFiles(files || []);
         formMethods.reset();  
     };
     return (
@@ -54,12 +121,12 @@ const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
 
                 <div className="flex flex-row space-x-2">
                     <div className="flex flex-col w-[120px] justify-center">
-                        <label className="mb-0" htmlFor="hastags">Has Tags</label>
+                        <label className="mb-0" htmlFor="hasTags">Has Tags</label>
                     </div>
                     <div className="flex flex-col w-[80px]">
                         <CustomFormFields
                             fieldType={FormFieldTypes.SELECT}
-                            name="hastags"
+                            name="hasTags"
                             placeholder="Select all tags or filter"
                             control={formMethods.control}
                         >
@@ -83,12 +150,12 @@ const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
 
                 <div className="flex flex-row space-x-2">
                     <div className="flex flex-col w-[120px] justify-center">
-                        <label className="mb-0" htmlFor="createdcondition">Created Date:</label>
+                        <label className="mb-0" htmlFor="createdCondition">Created Date:</label>
                     </div>
                     <div className="flex flex-col w-[80px]">
                         <CustomFormFields
                             fieldType={FormFieldTypes.SELECT}
-                            name="createdcondition"
+                            name="createdCondition"
                             placeholder="Select created condition"
                             control={formMethods.control}
                         >
@@ -106,7 +173,7 @@ const FilterForm: React.FC<FilterFormProps> = ({ closeDialog }) => {
                     <div className="flex flex-col w-full">
                         <CustomFormFields
                             fieldType={FormFieldTypes.DATE_PICKER}
-                            name="createdDate"
+                            name="createDate"
                             label=""
                             dateFormat="MM/dd/yyyy"
                             control={formMethods.control}

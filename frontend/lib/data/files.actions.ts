@@ -39,7 +39,6 @@ export const getFiles = async (): Promise<File[] | null> => {
 export const saveFile = async (formData: FormData, file_data: SaveFileProps): Promise<void> => {
     try {
         formData.append('fileDataJson', JSON.stringify(file_data));
-        console.log(JSON.stringify(file_data));
         
         const response = await fetch('http://localhost:5065/api/file', {
             method: 'POST',
@@ -51,7 +50,6 @@ export const saveFile = async (formData: FormData, file_data: SaveFileProps): Pr
         }
 
         const data = await response.json();
-        console.log('File saved successfully:', data);
     } catch (error) {
         console.error("Error posting file:", error);
     }

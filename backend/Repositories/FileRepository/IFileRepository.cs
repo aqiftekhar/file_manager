@@ -7,7 +7,7 @@ namespace FileManagerBackend.Repositories.FileRepository
     {
         Task<File> GetFileAsync(int id);
         Task<IEnumerable<File>> GetFilesAsync();
-        Task AddFileAsync(File file);
+        Task<File> AddFileAsync(File file);
         Task UpdateFileAsync(File file);
         Task DeleteFileAsync(int id);
          Task<IEnumerable<File>> GetFilesByVolumeIdAsync(int volumeId);

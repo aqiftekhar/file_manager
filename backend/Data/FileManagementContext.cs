@@ -6,7 +6,7 @@ namespace FileManagerBackend.Services.Data
 {
     public class FileManagementContext : DbContext
     {
-  public FileManagementContext(DbContextOptions<FileManagementContext> options) : base(options) { }
+        public FileManagementContext(DbContextOptions<FileManagementContext> options) : base(options) { }
 
         public DbSet<Volume> Volumes { get; set; }
         public DbSet<File> Files { get; set; }
@@ -18,7 +18,7 @@ namespace FileManagerBackend.Services.Data
             // Configuring primary keys and auto-increment
             modelBuilder.Entity<Volume>()
                 .HasKey(v => v.Id);
-                
+
             modelBuilder.Entity<File>()
                 .HasKey(f => f.Id);
 

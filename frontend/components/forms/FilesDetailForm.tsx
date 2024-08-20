@@ -14,7 +14,7 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, reset, selec
                 description: selectedFile.description || "",
                 tags: "",
                 savePaper: selectedFile.savePaper || false,
-                createdDate: selectedFile.createDate || new Date(),
+                createDate: selectedFile.createDate || new Date(),
             });
         }
     }, [selectedFile, control]);
@@ -49,7 +49,7 @@ const FilesDetailForm: React.FC<FilesDetailFormProps> = ({ control, reset, selec
             />
             <CustomFormFields
                 fieldType={FormFieldTypes.DATE_PICKER}
-                name="createdDate"
+                name="createDate"
                 label="Created Date"
                 dateFormat="MM/dd/yyyy"
                 control={control}

@@ -13,25 +13,38 @@ const FilesForm: React.FC<FilesFormProps> = ({ control, volumes, files, setIsFil
     const [selectedVolume, setSelectedVolume] = useState<number | null>(null);
     const [filteredFiles, setFilteredFiles] = useState<File[]>(files || []);
 
+    // Update filtered files based on volume selection
     useEffect(() => {
-        if (!selectedVolume) {
-            setFilteredFiles(files || []);
+        if (files) {
+            if (selectedVolume === null) {
+                // Show all files if no volume is selected
+                setFilteredFiles(files);
+            } else {
+                // Filter files by selected volume
+                const filtered = files.filter(file => file.volumeId === selectedVolume);
+                setFilteredFiles(filtered);
+            }
         }
-    }, [selectedVolume, files]);
+    }, [files, selectedVolume]);
 
-    const handleVolumeChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    // Handle volume change
+    const handleVolumeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedVolumeId = parseInt(event.target.value);
-        if (selectedVolumeId === 0) {
-            // "All" option selected, show all files
-            setFilteredFiles(files || []);
+        setSelectedVolume(selectedVolumeId === 0 ? null : selectedVolumeId);
+
+        // Clear filters and reset filteredFiles to the original files state
+        // Ensure that `files` state is used as base for filtering
+        // Clear filters and reset filteredFiles to the original files state
+        if (files) {
+            if (selectedVolumeId === 0) {
+                setFilteredFiles(files);
+            } else {
+                const filtered = files.filter(file => file.volumeId === selectedVolumeId);
+                setFilteredFiles(filtered);
+            }
         } else {
-
-            setSelectedVolume(selectedVolumeId);
-            const filteredFiles = files?.filter(file => file.volumeId === selectedVolumeId);
-
-            setFilteredFiles(filteredFiles || []);
+            setFilteredFiles([]);
         }
-
     };
 
     return (

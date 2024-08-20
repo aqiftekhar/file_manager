@@ -9,7 +9,7 @@ namespace FileManagerBackend.Repositories.FileRepository
 {
     public class FileRepository : IFileRepository
     {
-        private readonly FileManagementContext _context;
+        private readonly FileManagementContext _context; 
 
         public FileRepository(FileManagementContext context)
         {
@@ -33,11 +33,12 @@ namespace FileManagerBackend.Repositories.FileRepository
         {
             try
             {
-                return await _context.Files
+                var files = await _context.Files
                     .Include(f => f.Volume)
                     .Include(f => f.TagAssignments)
                         .ThenInclude(ta => ta.Tag)
                     .ToListAsync();
+                return files;
             }
             catch (Exception ex)
             {
@@ -46,14 +47,12 @@ namespace FileManagerBackend.Repositories.FileRepository
 
         }
 
-        public async Task AddFileAsync(File file)
+        public async Task<File> AddFileAsync(File file)
         {
             try
             {
-                // Check if VolumeId exists
                 var volumeExists = await _context.Volumes.AnyAsync(v => v.Id == file.VolumeId);
                 var fileJson = JsonSerializer.Serialize(file);
-                Console.WriteLine("File = " + fileJson);
                 if (!volumeExists)
                 {
                     
@@ -62,6 +61,7 @@ namespace FileManagerBackend.Repositories.FileRepository
 
                 _context.Files.Add(file);
                 await _context.SaveChangesAsync();
+                return file;
             }
             catch (DbUpdateException ex)
             {
